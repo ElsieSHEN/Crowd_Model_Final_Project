@@ -3,6 +3,7 @@ import torch
 import torch.nn.functional as F
 import torch.nn as nn
 import torch.optim as optim
+import time
 
 def train(model, trainloader):
     criterion = nn.CrossEntropyLoss()
@@ -10,6 +11,7 @@ def train(model, trainloader):
     epochs = 10
 
     print('Start training!')
+    start = time.clock()
 
     for e in range(epochs):
         train_loss = 0
@@ -26,5 +28,7 @@ def train(model, trainloader):
         train_loss = train_loss/len(trainloader.dataset)
         
         print('Epoch: {} \t Training Loss:{:.6f}'.format(e+1, train_loss))
-        
-    print('Finish training!')
+
+    t_train = time.clock() - start  
+    print('Finish training! time %.2fs' % (t_train))
+    print()
