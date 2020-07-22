@@ -36,7 +36,7 @@ class MegaModel(nn.Module):
         #print(x.shape)
         geom.set_data_matrix(x)
 
-        spectral = SpectralEmbedding(n_components=3, eigen_solver='amg',geom=geom, drop_first=False) # use 3 for spectral
+        spectral = SpectralEmbedding(n_components=10, eigen_solver='amg',geom=geom, drop_first=False) # use 3 for spectral
         spectral.fit_transform(x)
 
         x = x.view(-1, 3*32*32)
