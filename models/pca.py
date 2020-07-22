@@ -10,7 +10,7 @@ class PCAModel(nn.Module):
         super().__init__()
 
         self.fc = nn.Sequential(
-            nn.Linear(3*32*32, 512),
+            nn.Linear(6, 512),
             nn.ReLU(),
             nn.Dropout(0.2),
             nn.Linear(512, 10),
@@ -20,7 +20,8 @@ class PCAModel(nn.Module):
         pca = PCA(n_components=6)
         x = x.reshape(6, -1)
         pca.fit(x)
-        pca.transform(x)
-        x = x.view(-1, 3*32*32)
+        x = pca.transform(x)
+        x = torch.from_numpy(x).float()
+        x = x.view(-1, 6)
         x = self.fc(x)
         return x
