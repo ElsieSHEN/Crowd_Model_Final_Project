@@ -12,13 +12,16 @@ class MegaModel(nn.Module):
         super().__init__()
 
         self.fc = nn.Sequential(
-            nn.Linear(3*32*32, 512),
+            nn.Linear(3, 512),
             nn.ReLU(),
             nn.Dropout(0.2),
             nn.Linear(512, 10),
         )
         
     def forward(self, x):
+        print('x in:' , x.shape)
+        
+        
         
         rad1 = 0.7272        
         radius = rad1
@@ -32,13 +35,15 @@ class MegaModel(nn.Module):
         geom = Geometry(adjacency_method=adjacency_method, adjacency_kwds=adjacency_kwds,
                 affinity_method=affinity_method, affinity_kwds=affinity_kwds,
                 laplacian_method=laplacian_method, laplacian_kwds=laplacian_kwds)
-        x = x.view(-1, 3*32*32)
-        #print(x.shape)
+        
+        x = x.view(576, -1)
+        print(x.shape)
         geom.set_data_matrix(x)
-
         spectral = SpectralEmbedding(n_components=10, eigen_solver='amg',geom=geom, drop_first=False) # use 3 for spectral
-        spectral.fit_transform(x)
-
-        x = x.view(-1, 3*32*32)
+        embed_spectral = spectral.fit_transform(x)
+        embed_spectral = torch.from_numpy(embed_spectral).float()
+        print('x_totorch:', embed_spectral.shape)
+        
+        x = embed_spectral.view(-1, 3)
         x = self.fc(x)
         return x
