@@ -12,7 +12,7 @@ class Mega_LLE_Model(nn.Module):
         super().__init__()
 
         self.fc = nn.Sequential(
-            nn.Linear(3*32*32, 512),
+            nn.Linear(10, 512),
             nn.ReLU(),
             nn.Dropout(0.2),
             nn.Linear(512, 10),
@@ -20,8 +20,7 @@ class Mega_LLE_Model(nn.Module):
         
     def forward(self, x):
         
-        rad1 = 0.7272        
-        radius = rad1
+        radius = 1.2
         adjacency_method = 'cyflann'
         adjacency_kwds = {'radius':radius}
         affinity_method = 'gaussian'
@@ -32,13 +31,13 @@ class Mega_LLE_Model(nn.Module):
         geom = Geometry(adjacency_method=adjacency_method, adjacency_kwds=adjacency_kwds,
                 affinity_method=affinity_method, affinity_kwds=affinity_kwds,
                 laplacian_method=laplacian_method, laplacian_kwds=laplacian_kwds)
-        x = x.view(-1, 3*32*32)
+        x = x.view(100, -1)
         #print(x.shape)
         geom.set_data_matrix(x)
-
-        lle = LocallyLinearEmbedding(n_components=2, eigen_solver='dense',geom=geom)
+        lle = LocallyLinearEmbedding(n_components=10, eigen_solver='dense',geom=geom)
         embed_lle = lle.fit_transform(x)
+        embed_lle = torch.from_numpy(embed_lle).float()
 
-        x = x.view(-1, 3*32*32)
+        x = embed_lle.view(-1, 10)
         x = self.fc(x)
         return x
