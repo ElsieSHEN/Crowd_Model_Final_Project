@@ -18,7 +18,7 @@ class PCAModel(nn.Module):
         
     def forward(self, x):
         pca = PCA(n_components=6)
-        x = x.reshape(6, -1)
+        x = x.reshape(x.shape[0], -1)
         pca.fit(x)
         x = pca.transform(x)
         x = torch.from_numpy(x).float()
