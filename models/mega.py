@@ -21,8 +21,6 @@ class MegaModel(nn.Module):
     def forward(self, x):
         print('x in:' , x.shape)
         
-        
-        
         rad1 = 0.7272        
         radius = rad1
         adjacency_method = 'cyflann'
